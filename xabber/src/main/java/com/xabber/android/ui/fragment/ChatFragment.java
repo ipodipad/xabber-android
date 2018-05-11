@@ -706,28 +706,10 @@ public class ChatFragment extends Fragment implements PopupMenu.OnMenuItemClickL
     }
 
     private void onAttachButtonPressed() {
-        if (!HttpFileUploadManager.getInstance().isFileUploadSupported(account)) {
-            // show notification
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(R.string.error_file_upload_not_support)
-                    .setTitle(getString(R.string.error_sending_file, ""))
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-            return;
-        }
-
-        if (PermissionsRequester.requestFileReadPermissionIfNeeded(this, PERMISSIONS_REQUEST_ATTACH_FILE)) {
-            startFileSelection();
-        }
+        ((ChatActivity)getActivity()).showChooseFilesDialog();
     }
 
-    private void startFileSelection() {
+    public void startFileSelection() {
         Intent intent = (new Intent(Intent.ACTION_GET_CONTENT).setType("*/*").addCategory(Intent.CATEGORY_OPENABLE));
         startActivityForResult(intent, FILE_SELECT_ACTIVITY_REQUEST_CODE);
     }

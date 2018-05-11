@@ -73,6 +73,7 @@ import com.xabber.android.ui.adapter.ChatViewerAdapter;
 import com.xabber.android.ui.color.ColorManager;
 import com.xabber.android.ui.color.StatusBarPainter;
 import com.xabber.android.ui.dialog.BlockContactDialog;
+import com.xabber.android.ui.dialog.ChooseFileBottomDialogFragment;
 import com.xabber.android.ui.dialog.ContactDeleteDialogFragment;
 import com.xabber.android.ui.fragment.ChatFragment;
 import com.xabber.android.ui.fragment.ContactVcardViewerFragment;
@@ -1034,6 +1035,34 @@ public class ChatActivity extends ManagedActivity implements OnContactChangedLis
                     showShowcase(false);
                 }
             });
+        }
+    }
+
+    public void showChooseFilesDialog() {
+        ChooseFileBottomDialogFragment dialog = ChooseFileBottomDialogFragment.newInstance();
+        dialog.show(getSupportFragmentManager(), "choose_files_fragment");
+    }
+
+    public void openSystemFileGallery() {
+        if (!HttpFileUploadManager.getInstance().isFileUploadSupported(account)) {
+            // show notification
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.error_file_upload_not_support)
+                    .setTitle(getString(R.string.error_sending_file, ""))
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            return;
+        }
+
+        if (PermissionsRequester.requestFileReadPermissionIfNeeded(this, PERMISSIONS_REQUEST_ATTACH_FILE)) {
+            if (chatFragment != null)
+                chatFragment.startFileSelection();
         }
     }
 }
