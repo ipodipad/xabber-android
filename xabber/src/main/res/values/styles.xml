@@ -104,7 +104,7 @@
     </style>
 
     <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
-        <item name="behavior_peekHeight">200dp</item>
+        <item name="behavior_peekHeight">260dp</item>
     </style>
 
 </resources>

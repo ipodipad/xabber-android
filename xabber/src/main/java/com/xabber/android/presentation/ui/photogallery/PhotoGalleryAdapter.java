@@ -15,15 +15,22 @@ import java.util.List;
 
 public class PhotoGalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<PhotoVO> items;
-    private Context context;
-
     private static final int TYPE_PHOTO = 0;
     private static final int TYPE_BUTTON = 1;
 
-    public PhotoGalleryAdapter(List<PhotoVO> items, Context context) {
+    private List<PhotoVO> items;
+    private Context context;
+    private Listener listener;
+    private int numberOfChecked;
+
+    public interface Listener {
+        void onItemsChecked(int numberOfChecked);
+    }
+
+    public PhotoGalleryAdapter(List<PhotoVO> items, Context context, Listener listener) {
         this.items = items;
         this.context = context;
+        this.listener = listener;
     }
 
     @Override
@@ -99,8 +106,14 @@ public class PhotoGalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private void setItemChecked(int position, boolean checked) {
-        if (position < items.size())
-            items.get(position).setChecked(checked);
+        if (position > items.size() - 1) return;
+
+        items.get(position).setChecked(checked);
+
+        if (checked) numberOfChecked++;
+        else numberOfChecked--;
+
+        listener.onItemsChecked(numberOfChecked);
     }
 
 }
